@@ -13,7 +13,9 @@ import (
 	slogGorm "github.com/orandin/slog-gorm"
 )
 
-const ctxTxKey = "TxKey"
+type ctxKey string
+
+const ctxTxKey ctxKey = "TxKey"
 
 type Repository struct {
 	db     *gorm.DB
