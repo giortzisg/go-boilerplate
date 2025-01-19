@@ -4,8 +4,8 @@ import (
 	"context"
 	"flag"
 	"github.com/giortzisg/go-boilerplate/internal/repository"
-	"github.com/giortzisg/go-boilerplate/migrations"
 	"github.com/giortzisg/go-boilerplate/pkg/config"
+	"github.com/giortzisg/go-boilerplate/pkg/migration"
 	"log/slog"
 	"os"
 )
@@ -17,7 +17,7 @@ func main() {
 
 	log := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	db := repository.NewDB(conf, log)
-	migrateServer := migrations.NewMigrateServer(db, log)
+	migrateServer := migration.NewMigrateServer(db, log)
 
 	defer func() {
 		if err := migrateServer.Stop(context.Background()); err != nil {
