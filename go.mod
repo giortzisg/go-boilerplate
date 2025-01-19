@@ -1,6 +1,8 @@
 module github.com/giortzisg/go-boilerplate
 
-go 1.23.4
+go 1.22.0
+
+toolchain go1.23.4
 
 require (
 	github.com/glebarez/sqlite v1.11.0
