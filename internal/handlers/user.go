@@ -3,7 +3,6 @@ package handlers
 import (
 	v1 "github.com/giortzisg/go-boilerplate/api/v1"
 	"github.com/giortzisg/go-boilerplate/internal/app"
-	e "github.com/giortzisg/go-boilerplate/pkg/error"
 	"github.com/giortzisg/go-boilerplate/pkg/json"
 	"net/http"
 )
@@ -21,46 +20,39 @@ func NewUserHandler(h *Handler, userService app.UserService) *UserHandler {
 }
 
 func (h *UserHandler) Create() http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return ErrorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		requestData, err := json.Decoder[v1.CreateUserRequest](r)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
+			return err
 		}
 
 		if err = h.userService.Create(r.Context(), requestData); err != nil {
-			http.Error(w, err.Error(), err.(*e.StatusError).HTTPStatus())
-			return
+			return err
 		}
 
-		if err = json.Encoder(
+		return json.Encoder(
 			w, &v1.Response{
 				Message: "User created successfully",
 				Code:    http.StatusCreated,
 			},
 			http.StatusCreated,
-		); err != nil {
-			http.Error(w, "Error encoding response: "+err.Error(), http.StatusInternalServerError)
-			return
-		}
+		)
 	})
 }
 
 func (h *UserHandler) GetByEmail() http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return ErrorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		requestData, err := json.Decoder[v1.GetUserByEmailRequest](r)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
+			return err
 		}
 
 		response, err := h.userService.GetByEmail(r.Context(), requestData)
 		if err != nil {
-			http.Error(w, err.Error(), err.(*e.StatusError).HTTPStatus())
-			return
+			return err
 		}
 
-		if err = json.Encoder(
+		return json.Encoder(
 			w,
 			&v1.Response{
 				Message: "User retrieved successfully",
@@ -68,36 +60,28 @@ func (h *UserHandler) GetByEmail() http.Handler {
 				Data:    response,
 			},
 			http.StatusOK,
-		); err != nil {
-			http.Error(w, "Error encoding response: "+err.Error(), http.StatusInternalServerError)
-			return
-		}
+		)
 	})
 }
 
 func (h *UserHandler) Update() http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return ErrorHandler(func(w http.ResponseWriter, r *http.Request) error {
 		requestData, err := json.Decoder[v1.UpdateUserRequest](r)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
+			return err
 		}
 
 		if err = h.userService.Update(r.Context(), requestData); err != nil {
-			http.Error(w, err.Error(), err.(*e.StatusError).HTTPStatus())
-			return
+			return err
 		}
 
-		if err = json.Encoder(
+		return json.Encoder(
 			w,
 			&v1.Response{
 				Message: "User updated successfully",
 				Code:    http.StatusOK,
 			},
 			http.StatusOK,
-		); err != nil {
-			http.Error(w, "Error encoding response: "+err.Error(), http.StatusInternalServerError)
-			return
-		}
+		)
 	})
 }
