@@ -56,7 +56,7 @@ func (s *Server) Start(callerCtx context.Context) error {
 
 	srvErr := make(chan error, 1)
 	go func() {
-		s.logger.Info(fmt.Sprintf("Starting server..."))
+		s.logger.Info("Starting server...")
 		if err := s.srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			srvErr <- err
 		}
