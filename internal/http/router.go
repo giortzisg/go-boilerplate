@@ -2,7 +2,9 @@ package http
 
 import (
 	"github.com/giortzisg/go-boilerplate/internal/handlers"
+	"github.com/giortzisg/go-boilerplate/internal/middleware"
 	"github.com/go-chi/chi/v5"
+	"log/slog"
 )
 
 type Router struct {
@@ -10,12 +12,13 @@ type Router struct {
 	userHandler handlers.UserHandler
 }
 
-func NewRouter(userHandler handlers.UserHandler) *Router {
+func NewRouter(logger *slog.Logger, userHandler handlers.UserHandler) *Router {
 	router := &Router{
 		Mux:         chi.NewRouter(),
 		userHandler: userHandler,
 	}
 
+	router.Use(middleware.Logging(logger))
 	router.RegisterUserRoutes()
 	return router
 }

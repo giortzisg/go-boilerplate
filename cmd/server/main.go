@@ -24,7 +24,7 @@ func main() {
 	userRepo := repository.NewUserRepository(repo)
 	userService := app.NewUserService(userRepo)
 	userHandler := handlers.NewUserHandler(handlers.NewHandler(logger), userService)
-	router := routerHttp.NewRouter(*userHandler)
+	router := routerHttp.NewRouter(logger, *userHandler)
 
 	s := http.NewServer(
 		router.Mux,
