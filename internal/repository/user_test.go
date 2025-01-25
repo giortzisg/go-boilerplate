@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"database/sql/driver"
 	"log/slog"
 	"os"
 	"regexp"
@@ -12,18 +11,12 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/giortzisg/go-boilerplate/internal/model"
+	"github.com/giortzisg/go-boilerplate/test/mock/any"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
-
-type AnyTime struct{}
-
-func (a AnyTime) Match(v driver.Value) bool {
-	_, ok := v.(time.Time)
-	return ok
-}
 
 func setupRepository(t *testing.T) (UserRepository, sqlmock.Sqlmock) {
 	sqlDB, mock, err := sqlmock.New()
@@ -158,7 +151,7 @@ func TestUserRepository_Update(t *testing.T) {
 	t.Run("successful update", func(t *testing.T) {
 		mock.ExpectBegin()
 		mock.ExpectExec(regexp.QuoteMeta(`UPDATE "users" SET "name"=$1,"password"=$2,"email"=$3,"created_at"=$4,"updated_at"=$5,"deleted_at"=$6 WHERE "users"."deleted_at" IS NULL AND "id" = $7`)).
-			WithArgs(testUser.Name, testUser.Password, testUser.Email, AnyTime{}, AnyTime{}, nil, testUser.Id).
+			WithArgs(testUser.Name, testUser.Password, testUser.Email, any.Time{}, any.Time{}, nil, testUser.Id).
 			WillReturnResult(sqlmock.NewResult(1, 1))
 		mock.ExpectCommit()
 
@@ -169,7 +162,7 @@ func TestUserRepository_Update(t *testing.T) {
 	t.Run("update error", func(t *testing.T) {
 		mock.ExpectBegin()
 		mock.ExpectExec(regexp.QuoteMeta(`UPDATE "users" SET "name"=$1,"password"=$2,"email"=$3,"created_at"=$4,"updated_at"=$5,"deleted_at"=$6 WHERE "users"."deleted_at" IS NULL AND "id" = $7`)).
-			WithArgs(testUser.Name, testUser.Password, testUser.Email, AnyTime{}, AnyTime{}, nil, testUser.Id).
+			WithArgs(testUser.Name, testUser.Password, testUser.Email, any.Time{}, any.Time{}, nil, testUser.Id).
 			WillReturnError(sql.ErrConnDone)
 		mock.ExpectRollback()
 
