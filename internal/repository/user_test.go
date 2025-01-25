@@ -49,7 +49,11 @@ func setupRepository(t *testing.T) (UserRepository, sqlmock.Sqlmock) {
 
 func TestUserRepository_Create(t *testing.T) {
 	userRepo, mock := setupRepository(t)
-	defer mock.ExpectationsWereMet()
+	defer func() {
+		if err := mock.ExpectationsWereMet(); err != nil {
+			t.Errorf("there were unfulfilled expectations: %s", err)
+		}
+	}()
 
 	ctx := context.Background()
 
@@ -88,7 +92,11 @@ func TestUserRepository_Create(t *testing.T) {
 
 func TestUserRepository_GetByEmail(t *testing.T) {
 	userRepo, mock := setupRepository(t)
-	defer mock.ExpectationsWereMet()
+	defer func() {
+		if err := mock.ExpectationsWereMet(); err != nil {
+			t.Errorf("there were unfulfilled expectations: %s", err)
+		}
+	}()
 
 	ctx := context.Background()
 
@@ -130,7 +138,11 @@ func TestUserRepository_GetByEmail(t *testing.T) {
 
 func TestUserRepository_Update(t *testing.T) {
 	userRepo, mock := setupRepository(t)
-	defer mock.ExpectationsWereMet()
+	defer func() {
+		if err := mock.ExpectationsWereMet(); err != nil {
+			t.Errorf("there were unfulfilled expectations: %s", err)
+		}
+	}()
 
 	ctx := context.Background()
 
@@ -169,7 +181,11 @@ func TestUserRepository_Update(t *testing.T) {
 
 func TestUserRepository_GetByID(t *testing.T) {
 	userRepo, mock := setupRepository(t)
-	defer mock.ExpectationsWereMet()
+	defer func() {
+		if err := mock.ExpectationsWereMet(); err != nil {
+			t.Errorf("there were unfulfilled expectations: %s", err)
+		}
+	}()
 
 	ctx := context.Background()
 
