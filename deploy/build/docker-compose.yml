@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  go-boilerplate:
+    build:
+      context: ../../
+      dockerfile: deploy/build/Dockerfile
+      args:
+        CONFIG_ENV: ${CONFIG_ENV}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:17-alpine
+    container_name: db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "123456"
+    volumes:
+      - db_postgres:/var/lib/postgresql/data
+
+volumes:
+  db_postgres:

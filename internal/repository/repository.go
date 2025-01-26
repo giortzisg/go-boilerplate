@@ -2,13 +2,14 @@ package repository
 
 import (
 	"context"
+	"log/slog"
+	"time"
+
 	"github.com/glebarez/sqlite"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log/slog"
-	"time"
 
 	slogGorm "github.com/orandin/slog-gorm"
 )
@@ -73,6 +74,7 @@ func NewDB(conf *viper.Viper, logger *slog.Logger) *gorm.DB {
 		slogGorm.WithTraceAll(),
 	)
 
+	logger.Info("connecting to db", "driver", driver, "dsn", dsn)
 	switch driver {
 	case "mysql":
 		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
