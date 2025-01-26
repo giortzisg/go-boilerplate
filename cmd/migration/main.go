@@ -11,13 +11,18 @@ import (
 )
 
 func main() {
-	var envConf = flag.String("conf", "config/local.yaml", "config path, eg: -conf ./config/local.yaml")
-	flag.Parse()
-	conf := config.NewConfig(*envConf)
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
-	log := slog.New(slog.NewJSONHandler(os.Stdout, nil))
-	db := repository.NewDB(conf, log)
-	migrateServer := migration.NewMigrateServer(db, log)
+	var env = flag.String("config", "local", "config path, eg: -config local")
+	flag.Parse()
+	conf, err := config.NewConfig(*env)
+	if err != nil {
+		logger.Error("error loading config", err)
+		os.Exit(1)
+	}
+
+	db := repository.NewDB(conf, logger)
+	migrateServer := migration.NewMigrateServer(db, logger)
 
 	defer func() {
 		if err := migrateServer.Stop(context.Background()); err != nil {

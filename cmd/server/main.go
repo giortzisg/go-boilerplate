@@ -14,11 +14,16 @@ import (
 )
 
 func main() {
-	var envConf = flag.String("conf", "config/local.yaml", "config path, eg: -conf ./config/local.yaml")
-	flag.Parse()
-	conf := config.NewConfig(*envConf)
-
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
+	var env = flag.String("config", "local", "config path, eg: -config local")
+	flag.Parse()
+	conf, err := config.NewConfig(*env)
+	if err != nil {
+		logger.Error("error loading config", err)
+		os.Exit(1)
+	}
+
 	sqlDB := repository.NewDB(conf, logger)
 	repo := repository.NewRepository(logger, sqlDB)
 	userRepo := repository.NewUserRepository(repo)

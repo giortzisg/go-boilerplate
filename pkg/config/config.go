@@ -3,24 +3,16 @@ package config
 import (
 	"fmt"
 	"github.com/spf13/viper"
-	"os"
 )
 
-func NewConfig(p string) *viper.Viper {
-	envConf := os.Getenv("APP_CONF")
-	if envConf == "" {
-		envConf = p
-	}
-	fmt.Println("load conf file:", envConf)
-	return getConfig(envConf)
-}
-
-func getConfig(path string) *viper.Viper {
+func NewConfig(env string) (*viper.Viper, error) {
 	conf := viper.New()
-	conf.SetConfigFile(path)
-	err := conf.ReadInConfig()
-	if err != nil {
-		panic(err)
+	conf.AddConfigPath("./config")
+	conf.SetConfigName(env)
+
+	if err := conf.ReadInConfig(); err != nil {
+		return nil, fmt.Errorf("error reading config file: %v\n", err)
 	}
-	return conf
+
+	return conf, nil
 }

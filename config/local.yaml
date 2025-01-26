@@ -1,19 +1,9 @@
 env: local
 http:
-  #  host: 0.0.0.0
   host: 127.0.0.1
   port: 8080
-security:
-  api_sign:
-    app_key: 123456
-    app_security: 123456
-  jwt:
-    key: QQYnRFerJTSEcrfB89fw8prOaObmrch8
 data:
   db:
     user:
       driver: sqlite
       dsn: storage/test.db?_busy_timeout=5000
-  #    user:
-  #      driver: mysql
-  #      dsn: root:123456@tcp(127.0.0.1:3380)/user?charset=utf8mb4&parseTime=True&loc=Local

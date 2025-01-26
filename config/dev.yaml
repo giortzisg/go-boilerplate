@@ -1,0 +1,9 @@
+env: dev
+http:
+  host: 0.0.0.0
+  port: 8080
+data:
+  db:
+    user:
+      driver: postgres
+      dsn: host=localhost user=postgres password=123456 dbname=postgres port=5432 sslmode=disable
